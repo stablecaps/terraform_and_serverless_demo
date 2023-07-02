@@ -1,0 +1,7 @@
+# pls pass deployment_bucket &  iam_role_arn via_cli to keep dynamic vars up to date
+# serverless deploy --stage dev --region eu-west-1 --param="rolearn=arn:aws:iam::889934699932:role/lambda/dev/exif-ripper-dev-eu-west-1-lambdaRole20220427180337074400000001"
+aws_region: eu-west-1
+deployment_bucket: serverless-deployment-holder-658fi8r7
+stage: dev
+iam_role_arn: arn:aws:iam::779934699932:role/lambda/dev/exif-ripper-dev-eu-west-1-lambdaRole20220427180337074400000001
+ssm_root_prefix: /genomics/exifripper

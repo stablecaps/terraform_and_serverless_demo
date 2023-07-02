@@ -1,0 +1,68 @@
+service: exif-ripper
+
+plugins:
+  - serverless-python-requirements
+  - serverless-stack-output
+  - serverless-ssm-fetch
+custom:
+  defaultStage: dev
+  currentStage: ${opt:stage, self:custom.defaultStage}
+  awsRegion: ${file(./config/${self:custom.currentStage}.yml):aws_region}
+  iamRoleArnFromFile: ${file(./config/${self:custom.currentStage}.yml):iam_role_arn}
+  iamRoleArn: ${param:rolearn, self:custom.iamRoleArnFromFile}
+  ssm_root_prefix: ${file(./config/${self:custom.currentStage}.yml):ssm_root_prefix}
+  deploymentBucketFromFile: ${file(./config/${self:custom.currentStage}.yml):deployment_bucket}
+  deploymentBucket: ${param:dbuck, self:custom.deploymentBucketFromFile}
+  bucketSourceSsmKey: "${self:custom.ssm_root_prefix}/${self:custom.currentStage}/bucketsource"
+  serverlessSsmFetch:
+    bucketSource: "${self:custom.bucketSourceSsmKey}"
+    bucketDest: "${self:custom.ssm_root_prefix}/${self:custom.currentStage}/bucketdest"
+  pythonRequirements:
+    dockerizePip: true
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: python3.8
+  stage: ${self:custom.currentStage}
+  region: ${self:custom.awsRegion}
+  deploymentBucket: ${self:custom.deploymentBucket}
+  role: ${self:custom.iamRoleArn}
+
+package:
+  individually: true
+  exclude:
+    - "*/**"
+  include:
+    - handler.py
+    - boto3_helpers.py
+    - secrets_manager.py
+    - requirements.txt
+    - __init__.py
+
+functions:
+  exif:
+    handler: handler.exifripper
+    ssmToEnvironment:
+      - bucketSource
+      - bucketDest
+    package:
+      individually: true
+      exclude:
+        - "*/**"
+      include:
+        - handler.py
+        - boto3_helpers.py
+        - secrets_manager.py
+        - requirements.txt
+        - __init__.py
+    events:
+      - s3:
+          bucket: ${ssm:${self:custom.bucketSourceSsmKey}}
+          event: s3:ObjectCreated:*
+          rules:
+            - prefix: incoming
+            - suffix: .jpg
+          existing: true
+#

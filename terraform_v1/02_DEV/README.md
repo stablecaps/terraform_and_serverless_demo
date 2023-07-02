@@ -1,0 +1,44 @@
+<!-- BEGIN_TF_DOCS -->
+## Requirements
+
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | = 1.0.6 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 4.9.0 |
+
+## Providers
+
+No providers.
+
+## Modules
+
+| Name | Source | Version |
+|------|--------|---------|
+| <a name="module_exif_buckets"></a> [exif\_buckets](#module\_exif\_buckets) | ../modules/exif_ripper_buckets | n/a |
+| <a name="module_iam_exif_users"></a> [iam\_exif\_users](#module\_iam\_exif\_users) | ../modules/iam_exif_users | n/a |
+| <a name="module_lambda_role_and_policies"></a> [lambda\_role\_and\_policies](#module\_lambda\_role\_and\_policies) | ../modules/lambda_iam_role_and_policies | n/a |
+
+## Resources
+
+No resources.
+
+## Inputs
+
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_env"></a> [env](#input\_env) | Deployment environment. e.g. dev, uat, prod | `string` | `"dev"` | no |
+| <a name="input_random_string"></a> [random\_string](#input\_random\_string) | A random string to ensure that different people can create uniuque s3 resources | `string` | n/a | yes |
+| <a name="input_ssm_root_prefix"></a> [ssm\_root\_prefix](#input\_ssm\_root\_prefix) | SSM root prefix used to construct the key path | `string` | `"/genomics/exifripper"` | no |
+
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| <a name="output_bucket_dest_name"></a> [bucket\_dest\_name](#output\_bucket\_dest\_name) | exif-ripper s3 destination bucket name |
+| <a name="output_bucket_source_name"></a> [bucket\_source\_name](#output\_bucket\_source\_name) | exif-ripper s3 source bucket name |
+| <a name="output_iam_exif_s3_rob_id"></a> [iam\_exif\_s3\_rob\_id](#output\_iam\_exif\_s3\_rob\_id) | user B RO IAM access id |
+| <a name="output_iam_exif_s3_rob_secret"></a> [iam\_exif\_s3\_rob\_secret](#output\_iam\_exif\_s3\_rob\_secret) | user B RO IAM access secret |
+| <a name="output_iam_exif_s3_rwa_id"></a> [iam\_exif\_s3\_rwa\_id](#output\_iam\_exif\_s3\_rwa\_id) | user A RW IAM access id |
+| <a name="output_iam_exif_s3_rwa_secret"></a> [iam\_exif\_s3\_rwa\_secret](#output\_iam\_exif\_s3\_rwa\_secret) | user A RW IAM access secret |
+| <a name="output_iam_role_arn"></a> [iam\_role\_arn](#output\_iam\_role\_arn) | Lambda IAM role arn used for serverless function |
+<!-- END_TF_DOCS -->

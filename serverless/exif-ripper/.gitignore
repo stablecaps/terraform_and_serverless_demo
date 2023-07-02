@@ -1,0 +1,24 @@
+# Distribution / packaging
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Serverless directories
+.serverlessnode_modules/2-thenable node_modules/ansi-regex node_modules/ansi-styles node_modules/appdirectory node_modules/argparse node_modules/at-least-node node_modules/balanced-match node_modules/bluebird node_modules/brace-expansion node_modules/camelcase node_modules/chalk node_modules/child-process-ext node_modules/cliui node_modules/color-convert node_modules/color-name node_modules/concat-map node_modules/core-util-is node_modules/cross-spawn node_modules/d node_modules/decamelize node_modules/duration node_modules/emoji-regex node_modules/es5-ext node_modules/es6-iterator node_modules/es6-symbol node_modules/escape-string-regexp node_modules/event-emitter node_modules/ext node_modules/find-up node_modules/fs-extra node_modules/fs.realpath node_modules/get-caller-file node_modules/glob node_modules/glob-all node_modules/graceful-fs node_modules/has-flag node_modules/@iarna node_modules/immediate node_modules/inflight node_modules/inherits node_modules/isarray node_modules/is-docker node_modules/isexe node_modules/is-fullwidth-code-point node_modules/isobject node_modules/is-plain-object node_modules/is-primitive node_modules/is-stream node_modules/is-wsl node_modules/jsonfile node_modules/jszip node_modules/lie node_modules/locate-path node_modules/lodash.get node_modules/lodash.uniqby node_modules/lodash.values node_modules/log node_modules/minimatch node_modules/next-tick node_modules/nice-try node_modules/once node_modules/pako node_modules/path-exists node_modules/path-is-absolute node_modules/path-key node_modules/p-limit node_modules/p-locate node_modules/process-nextick-args node_modules/p-try node_modules/readable-stream node_modules/require-directory node_modules/require-main-filename node_modules/rimraf node_modules/safe-buffer node_modules/semver node_modules/serverless-deployment-bucket node_modules/serverless-python-requirements node_modules/serverless-stack-output node_modules/set-blocking node_modules/set-immediate-shim node_modules/set-value node_modules/sha256-file node_modules/shebang-command node_modules/shebang-regex node_modules/shell-quote node_modules/split2 node_modules/sprintf-js node_modules/sprintf-kit node_modules/stream-promise node_modules/string_decoder node_modules/string-width node_modules/strip-ansi node_modules/supports-color node_modules/tomlify-j0.4 node_modules/type node_modules/uni-global node_modules/universalify node_modules/util-deprecate node_modules/which node_modules/which-module node_modules/wrap-ansi node_modules/wrappy node_modules/y18n node_modules/yamljs node_modules/yargs node_modules/yargs-parse
+
+.serverless/*
+node_modules/*
+scrap*.py

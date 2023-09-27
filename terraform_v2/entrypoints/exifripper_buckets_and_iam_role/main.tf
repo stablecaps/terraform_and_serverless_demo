@@ -27,7 +27,7 @@ module "exif_buckets" {
 ### uses a custom written remote module written by me
 module "lambda_role_and_policies" {
 
-  source = "github.com/meatware/tfmod-iam-role-with-policies?ref=v2.0.0"
+  source = "github.com/stablecaps/terraform-aws-iam-policies-stablecaps?ref=v2.0.0"
 
   role_name = "exif-ripper-${var.env}-eu-west-1-lambdaRole"
   role_desc = "lambda iam role for exif-ripper - ${var.env}"

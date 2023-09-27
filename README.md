@@ -161,15 +161,15 @@ A few patterns of organising and deploying Terraform code are illustrated in thi
 
 Some of the pertinent questions with regards to how terraform code is structured are listed below, but a detailed discussion is beyond the scope of this document.
 
-1. `terraform_v1` - [The simplest method](https://github.com/meatware/genomics_test/blob/master/xxx_pipeline_create.sh#L44-L47)
+1. `terraform_v1` - [The simplest method](https://github.com/stablecaps/terraform_and_serverless_demo/blob/master/xxx_pipeline_create.sh#L44-L47)
     - Uses a local state file so the terraform.tfstate file is saved to the local disk. In order to facilitate shared team editing, the state file is typically stored in git. This is a potential security concern as sensitive values can be exposed.
     - Once the DEV environment is created, it can be copied and pasted to create UAT & DEV environments. Only a few values such as env value (e.g. `dev --> uat`) will have to be changed in the new env. However, the resulting code duplication can result in env-variant configuration drift and uncaught errors.
     - Uses publicly available remote modules from the [Terraform registry])(https://registry.terraform.io/) for resources such as s3 to avoid reinventing the wheel.
     - Uses local modules that are nested in the root of `terraform_v1`. This is a step in the right direction, but any modules defined here cannot be reused for other Terraform consumers. Furthermore, there is no module versioning and changes to these modules will be applicable to DEV, UAT & PROD. We can work around this by checking out specific branches in CI/CD in an env-specific manner, but this is a clunky solution that has suboptimal visibility.
-2. `terraform_v2` - [A DRY method](https://github.com/meatware/genomics_test/blob/master/xxx_tfver2_pipeline_create.sh#L73-L76)
+2. `terraform_v2` - [A DRY method](https://github.com/stablecaps/terraform_and_serverless_demo/blob/master/xxx_tfver2_pipeline_create.sh#L73-L76)
     - Uses a remote s3/dynamodb backend with remote state locking. Facilitates multi-user collaboration
     - DRY: Leverages passing in tfvar variables (stored in the envs folder) via the `-var-file` CLI argument. e.g. `terraform init -backend-config=../../envs/${myenv}/${myenv}.backend.hcl`,  followed by `terraform apply -var-file=../../envs/${myenv}/${myenv}.tfvars` A disadvantage is complexity increase and potential accidental deployment to the wrong environment if deploying from the CLI. Usually not such a big problem because CI/CD is used to deploy. However, something to watch out for.
-    - Uses custom remote module written by yours truly to provision an IAM role with custom or managed policies. The remote module is versioned with release  tags and can be found here: https://github.com/meatware/tfmod-iam-role-with-policies.
+    - Uses custom remote module written by yours truly to provision an IAM role with custom or managed policies. The remote module is versioned with release  tags and can be found here: https://github.com/stablecaps/terraform-aws-iam-policies-stablecaps.
 
 
 #### Terraform_v1 components & workflow
@@ -201,10 +201,10 @@ This version is included to illustrate a method that is more DRY than v1. See `x
 2. Creates Serverless deployment bucket. Multiple Serverless projects can be nested in this bucket. This is to avoid the mess of multiple random Serverless buckets being scattered around the root of s3.
 3. Creates source & destination s3 buckets for exif image processing
 4. Pushes the names of these buckets to SSM
-5. Creates a lambda role and policy using a [remote module](https://github.com/meatware/tfmod-iam-role-with-policies).
+5. Creates a lambda role and policy using a [remote module](https://github.com/stablecaps/terraform-aws-iam-policies-stablecaps).
     - Uses tags so that consumers pin to a specific version of the upstream code
-    - Has [scripts](https://github.com/meatware/tfmod-iam-role-with-policies/blob/master/xxx_terraform-docs.sh) to automate README.md creation
-    - Has live examples that can be [created](https://github.com/meatware/tfmod-iam-role-with-policies/blob/master/xxx_tests_run_examples.sh) and [destroyed](https://github.com/meatware/tfmod-iam-role-with-policies/blob/master/xxx_tests_destroy_examples.sh) to test any new code that might be merged into master
+    - Has [scripts](https://github.com/stablecaps/terraform-aws-iam-policies-stablecaps/blob/master/xxx_terraform-docs.sh) to automate README.md creation
+    - Has live examples that can be [created](https://github.com/stablecaps/terraform-aws-iam-policies-stablecaps/blob/master/xxx_tests_run_examples.sh) and [destroyed](https://github.com/stablecaps/terraform-aws-iam-policies-stablecaps/blob/master/xxx_tests_destroy_examples.sh) to test any new code that might be merged into master
 
 
 ```
@@ -247,11 +247,11 @@ cd -
 #### Please ensure you have exported your aws credentials into your shell
 This has been test-deployed into an R&D account using Admin credentials. Try to do the same or use an account with the perms to use lambda, s3, iam, dynamodb, and SSM (systems manager) at the least.
 
-An optional method to get a great bash experience via https://github.com/meatware/sys_bashrc
+An optional method to get a great bash experience via https://github.com/stablecaps/stablecaps_bashrc
 
 ```bash
 cd
-git clone https://github.com/meatware/sys_bashrc.git
+git clone https://github.com/stablecaps/stablecaps_bashrc.git
 mv .bashrc .your_old_bashrc
 ln -fs ~/sys_bashrc/_bashrc ~/.bashrc
 source ~/.bashrc

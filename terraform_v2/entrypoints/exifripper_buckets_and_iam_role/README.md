@@ -15,7 +15,7 @@ No providers.
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_exif_buckets"></a> [exif\_buckets](#module\_exif\_buckets) | ../../modules/exif_ripper_buckets | n/a |
-| <a name="module_lambda_role_and_policies"></a> [lambda\_role\_and\_policies](#module\_lambda\_role\_and\_policies) | github.com/meatware/tfmod-iam-role-with-policies | v2.0.0 |
+| <a name="module_lambda_role_and_policies"></a> [lambda\_role\_and\_policies](#module\_lambda\_role\_and\_policies) | github.com/stablecaps/terraform-aws-iam-policies-stablecaps | v2.0.0 |
 
 ## Resources
 

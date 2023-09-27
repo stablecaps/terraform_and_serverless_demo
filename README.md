@@ -1,4 +1,4 @@
-# Genomics Test
+# A Timed Interview Test (4 days)
 **Step 1**
 A company allows their users to upload pictures to an S3 bucket. These pictures are always in the .jpg format. The company wants these files to be stripped from any exif metadata before being shown on their website. Pictures are uploaded to an S3 bucket A. Create a system that retrieves .jpg files when they are uploaded to the S3 bucket A, removes any exif metadata, and save them to another S3 bucket B. The path of the files should be the same in buckets A and B.
 
@@ -13,7 +13,7 @@ To extend this further, we have two users User A and User B. Create IAM users wi
 
 ![Exif-ripper architecture](docs/exif_ripper.drawio.png)
 
-A natural solution for this problem is to use AWS lambda because this service provides the ability to monitor an s3 bucket and trigger event based messages that can be sent to any arbitrary downstream image processor. Indeed, a whole pipeline of lambda functions can used in the "chain of responsibility pattern" if desired.
+A natural solution for this problem is to use AWS lambda because this service provides the ability to monitor an S3 bucket and trigger event based messages that can be sent to any arbitrary downstream image processor. Indeed, a whole pipeline of lambda functions can used in the "chain of responsibility pattern" if desired.
 
 ![Chain of responsibility](docs/Chained-Microservices-Design-Pattern.png)
 
@@ -60,7 +60,7 @@ Further reading:
 
 
 ### Serverless Function Overview
-Exif-Ripper is a Serverless application that creates an event triggering lambda that monitors a source s3 bucket for the upload of jpg files. When this occurs, an AWS event invokes another (python3) lambda function that strips the exif data from the jpg and writes the "sanitised" jpg to a destination bucket. This lambda function also reads & processes the image directly in memory, and thus does not incur write time-penalties by writing the file to scratch.
+Exif-Ripper is a Serverless application that creates an event triggering lambda that monitors a source s3 bucket for the upload of jpg files. When this occurs, an AWS event invokes another (Python3) lambda function that strips the exif data from the jpg and writes the "sanitised" jpg to a destination bucket. This lambda function also reads & processes the image directly in memory, and thus does not incur write time-penalties by writing the file to scratch.
 
 #### The Serverless.yml does the following:
 See `Serverless/exif-ripper/Serverless.yml`
@@ -108,15 +108,15 @@ See `Serverless/exif-ripper/Serverless.yml`
 
 The directory structure in this project co-locates the infrastructure code with the dev code. An alternative method is accomplished via separation of the infrastructure code from the dev code into 2 repos:
 
-1. genomics-test (conatins dev Serverless code)
-2. genomics-test-infra (contains only terraform code)
+1. myCompany-test (conatins dev Serverless code)
+2. myCompany-test-infra (contains only terraform code)
 
 **Pros and cons of co-location method:**
 The primary benefit of co-location of the terraform code within a Serverless project is the ostensible ease of deploying the compressed Serverless zip file from a single directory. [ See ./xxx_pipeline_create.sh](./xxx_pipeline_create.sh). This makes sense in the context of this example project because there is a requirement to share an uncomplicated code base.
 
 ```
 .
-└── genomics-test
+└── myCompany-test
     ├── Serverless (code repo)
     ├── Terraform_v1 (terraform repo)
     └── Terraform_v2 (terraform repo)
@@ -127,7 +127,7 @@ However, if a build server was available, we can escape monorepo-centric notions
 ```bash
 .
 └── build_agent_dir
-    ├── genomics-test  (code repo)
+    ├── myCompany-test  (code repo)
         ├── Serverless
         └── exif-ripper
             ├── config
@@ -137,7 +137,7 @@ However, if a build server was available, we can escape monorepo-centric notions
 ### Note infra repo is accessible at another location on the same build server
 .
 └── /opt/all_terraform_consumers
-    └── genomics-test-infra (terraform repo)
+    └── myCompany-test-infra (terraform repo)
          └── terraform_v1
 
 ```
@@ -161,12 +161,12 @@ A few patterns of organising and deploying Terraform code are illustrated in thi
 
 Some of the pertinent questions with regards to how terraform code is structured are listed below, but a detailed discussion is beyond the scope of this document.
 
-1. `terraform_v1` - [The simplest method](https://github.com/meatware/genomics_test/blob/master/xxx_pipeline_create.sh#L44-L47)
+1. `terraform_v1` - [The simplest method](https://github.com/meatware/myCompany_test/blob/master/xxx_pipeline_create.sh#L44-L47)
     - Uses a local state file so the terraform.tfstate file is saved to the local disk. In order to facilitate shared team editing, the state file is typically stored in git. This is a potential security concern as sensitive values can be exposed.
     - Once the DEV environment is created, it can be copied and pasted to create UAT & DEV environments. Only a few values such as env value (e.g. `dev --> uat`) will have to be changed in the new env. However, the resulting code duplication can result in env-variant configuration drift and uncaught errors.
     - Uses publicly available remote modules from the [Terraform registry])(https://registry.terraform.io/) for resources such as s3 to avoid reinventing the wheel.
     - Uses local modules that are nested in the root of `terraform_v1`. This is a step in the right direction, but any modules defined here cannot be reused for other Terraform consumers. Furthermore, there is no module versioning and changes to these modules will be applicable to DEV, UAT & PROD. We can work around this by checking out specific branches in CI/CD in an env-specific manner, but this is a clunky solution that has suboptimal visibility.
-2. `terraform_v2` - [A DRY method](https://github.com/meatware/genomics_test/blob/master/xxx_tfver2_pipeline_create.sh#L73-L76)
+2. `terraform_v2` - [A DRY method](https://github.com/meatware/myCompany_test/blob/master/xxx_tfver2_pipeline_create.sh#L73-L76)
     - Uses a remote s3/dynamodb backend with remote state locking. Facilitates multi-user collaboration
     - DRY: Leverages passing in tfvar variables (stored in the envs folder) via the `-var-file` CLI argument. e.g. `terraform init -backend-config=../../envs/${myenv}/${myenv}.backend.hcl`,  followed by `terraform apply -var-file=../../envs/${myenv}/${myenv}.tfvars` A disadvantage is complexity increase and potential accidental deployment to the wrong environment if deploying from the CLI. Usually not such a big problem because CI/CD is used to deploy. However, something to watch out for.
     - Uses custom remote module written by yours truly to provision an IAM role with custom or managed policies. The remote module is versioned with release  tags and can be found here: https://github.com/meatware/tfmod-iam-role-with-policies.

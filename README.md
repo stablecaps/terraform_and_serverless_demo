@@ -1,4 +1,4 @@
-# Genomics Test
+# A Timed Interview Test (~5 days)
 **Step 1**
 A company allows their users to upload pictures to an S3 bucket. These pictures are always in the .jpg format. The company wants these files to be stripped from any exif metadata before being shown on their website. Pictures are uploaded to an S3 bucket A. Create a system that retrieves .jpg files when they are uploaded to the S3 bucket A, removes any exif metadata, and save them to another S3 bucket B. The path of the files should be the same in buckets A and B.
 
@@ -13,11 +13,11 @@ To extend this further, we have two users User A and User B. Create IAM users wi
 
 ![Exif-ripper architecture](docs/exif_ripper.drawio.png)
 
-A natural solution for this problem is to use AWS lambda because this service provides the ability to monitor an s3 bucket and trigger event based messages that can be sent to any arbitrary downstream image processor. Indeed, a whole pipeline of lambda functions can used in the "chain of responsibility pattern" if desired.
+A natural solution for this problem is to use AWS lambda because this service provides the ability to monitor an S3 bucket and trigger event based messages that can be sent to any arbitrary downstream image processor. Indeed, a whole pipeline of lambda functions can used in the "chain of responsibility pattern" if desired.
 
 ![Chain of responsibility](docs/Chained-Microservices-Design-Pattern.png)
 
-Given the limited time to accomplish this task, a benefit of using Serverless is that it is trivial to set up monitoring on a bucket for pushed images because the framework creates the monitoring lambda for us in a few lines of code. When the following code is added to the Serverless.yml file, the monitoring lambda pushes an [event](https://www.Serverless.com/framework/docs/providers/aws/events/s3) to the custom exif-ripper lambda when a file with the suffix of `.jpg` and a s3 key prefix of `incoming/` is created in the bucket called `mysource-bucket`.
+Given the limited time to accomplish this task, a benefit of using Serverless is that it is trivial to set up monitoring on a bucket for pushed images because the framework creates the monitoring lambda for us in a few lines of code. When the following code is added to the Serverless.yml file, the monitoring lambda pushes an [event](https://www.Serverless.com/framework/docs/providers/aws/events/s3) to the custom exif-ripper lambda when a file with the suffix of `.jpg` and a S3 key prefix of `incoming/` is created in the bucket called `mysource-bucket`.
 
 ```yaml
 functions:
@@ -33,7 +33,7 @@ functions:
 ```
 
 The lambda Python3 code for exif-ripper is located in `Serverless/exif-ripper/` and it leverages the following libraries to execute the following workflow:
-1. [boto3](https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/s3.html#s3): Read binary image file from s3 into RAM.
+1. [boto3](https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/s3.html#s3): Read binary image file from S3 into RAM.
 2. [exif](https://pypi.org/project/exif/): Strips any exif data from image
 3. Use Boto3 again to write the sanitised file to the destination bucket.
 
@@ -60,7 +60,7 @@ Further reading:
 
 
 ### Serverless Function Overview
-Exif-Ripper is a Serverless application that creates an event triggering lambda that monitors a source s3 bucket for the upload of jpg files. When this occurs, an AWS event invokes another (python3) lambda function that strips the exif data from the jpg and writes the "sanitised" jpg to a destination bucket. This lambda function also reads & processes the image directly in memory, and thus does not incur write time-penalties by writing the file to scratch.
+Exif-Ripper is a Serverless application that creates an event triggering lambda that monitors a source S3 bucket for the upload of jpg files. When this occurs, an AWS event invokes another (Python3) lambda function that strips the exif data from the jpg and writes the "sanitised" jpg to a destination bucket. This lambda function also reads & processes the image directly in memory, and thus does not incur write time-penalties by writing the file to scratch.
 
 #### The Serverless.yml does the following:
 See `Serverless/exif-ripper/Serverless.yml`
@@ -108,15 +108,15 @@ See `Serverless/exif-ripper/Serverless.yml`
 
 The directory structure in this project co-locates the infrastructure code with the dev code. An alternative method is accomplished via separation of the infrastructure code from the dev code into 2 repos:
 
-1. genomics-test (conatins dev Serverless code)
-2. genomics-test-infra (contains only terraform code)
+1. myCompany-test (conatins dev Serverless code)
+2. myCompany-test-infra (contains only terraform code)
 
 **Pros and cons of co-location method:**
 The primary benefit of co-location of the terraform code within a Serverless project is the ostensible ease of deploying the compressed Serverless zip file from a single directory. [ See ./xxx_pipeline_create.sh](./xxx_pipeline_create.sh). This makes sense in the context of this example project because there is a requirement to share an uncomplicated code base.
 
 ```
 .
-└── genomics-test
+└── myCompany-test
     ├── Serverless (code repo)
     ├── Terraform_v1 (terraform repo)
     └── Terraform_v2 (terraform repo)
@@ -127,7 +127,7 @@ However, if a build server was available, we can escape monorepo-centric notions
 ```bash
 .
 └── build_agent_dir
-    ├── genomics-test  (code repo)
+    ├── myCompany-test  (code repo)
         ├── Serverless
         └── exif-ripper
             ├── config
@@ -137,7 +137,7 @@ However, if a build server was available, we can escape monorepo-centric notions
 ### Note infra repo is accessible at another location on the same build server
 .
 └── /opt/all_terraform_consumers
-    └── genomics-test-infra (terraform repo)
+    └── myCompany-test-infra (terraform repo)
          └── terraform_v1
 
 ```
@@ -164,7 +164,7 @@ Some of the pertinent questions with regards to how terraform code is structured
 1. `terraform_v1` - [The simplest method](https://github.com/stablecaps/terraform_and_serverless_demo/blob/master/xxx_pipeline_create.sh#L44-L47)
     - Uses a local state file so the terraform.tfstate file is saved to the local disk. In order to facilitate shared team editing, the state file is typically stored in git. This is a potential security concern as sensitive values can be exposed.
     - Once the DEV environment is created, it can be copied and pasted to create UAT & DEV environments. Only a few values such as env value (e.g. `dev --> uat`) will have to be changed in the new env. However, the resulting code duplication can result in env-variant configuration drift and uncaught errors.
-    - Uses publicly available remote modules from the [Terraform registry])(https://registry.terraform.io/) for resources such as s3 to avoid reinventing the wheel.
+    - Uses publicly available remote modules from the [Terraform registry](https://registry.terraform.io/) for resources such as S3 to avoid reinventing the wheel.
     - Uses local modules that are nested in the root of `terraform_v1`. This is a step in the right direction, but any modules defined here cannot be reused for other Terraform consumers. Furthermore, there is no module versioning and changes to these modules will be applicable to DEV, UAT & PROD. We can work around this by checking out specific branches in CI/CD in an env-specific manner, but this is a clunky solution that has suboptimal visibility.
 2. `terraform_v2` - [A DRY method](https://github.com/stablecaps/terraform_and_serverless_demo/blob/master/xxx_tfver2_pipeline_create.sh#L73-L76)
     - Uses a remote s3/dynamodb backend with remote state locking. Facilitates multi-user collaboration
@@ -175,8 +175,8 @@ Some of the pertinent questions with regards to how terraform code is structured
 #### Terraform_v1 components & workflow
 See `xxx_pipeline_create.sh`
 
-1. Creates a global Serverless deployment bucket which can be used by multiple apps. Multiple Serverless projects can be nested in this bucket. This is to avoid the multiple random Serverless buckets being scattered around the root of s3.
-2. Creates source & destination s3 buckets for exif image processing
+1. Creates a global Serverless deployment bucket which can be used by multiple apps. Multiple Serverless projects can be nested in this bucket. This is to avoid multiple random Serverless buckets being scattered around the root of S3.
+2. Creates source & destination S3 buckets for exif image processing
 3. Pushes the names of these buckets to SSM
 4. Creates a lambda role and policy using a custom remote module pinned to a specific tag
 5. Creates two users with RO and RW permissions to the buckets as specified in the brief
@@ -197,9 +197,9 @@ See `xxx_pipeline_create.sh`
 #### Terraform_v2 does the following:
 **(Please ensure any infra created by v1 is destroyed before deploying v2!)**
 This version is included to illustrate a method that is more DRY than v1. See `xxx_tfver2_pipeline_create.sh`
-1. Creates a global s3/dynamodb backend and writes the backend config files to envs folder (`00_setup_remote_s3_backend_{dev,prod}`)
-2. Creates Serverless deployment bucket. Multiple Serverless projects can be nested in this bucket. This is to avoid the mess of multiple random Serverless buckets being scattered around the root of s3.
-3. Creates source & destination s3 buckets for exif image processing
+1. Creates a global S3/dynamodb backend and writes the backend config files to envs folder (`00_setup_remote_s3_backend_{dev,prod}`)
+2. Creates Serverless deployment bucket. Multiple Serverless projects can be nested in this bucket. This is to avoid the mess of multiple random Serverless buckets being scattered around the root of S3.
+3. Creates source & destination S3 buckets for exif image processing
 4. Pushes the names of these buckets to SSM
 5. Creates a lambda role and policy using a [remote module](https://github.com/stablecaps/terraform-aws-iam-policies-stablecaps).
     - Uses tags so that consumers pin to a specific version of the upstream code
@@ -225,7 +225,7 @@ This version is included to illustrate a method that is more DRY than v1. See `x
 
 
 ## Deployment notes
-As s3 buckets must be unique, a random string is used so that multiple people can run the deployment in their own environments at any given time without error.
+As S3 buckets must be unique, a random string is used so that multiple people can run the deployment in their own environments at any given time without error.
 
 
 ## Practical Usage

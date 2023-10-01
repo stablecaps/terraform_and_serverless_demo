@@ -1,7 +1,3 @@
-locals {
-  lambda_role_name = "exif-ripper-${var.env}-eu-west-1-lambdaRole"
-}
-
 resource "aws_iam_role" "lambda_role" {
   name_prefix = local.lambda_role_name
 

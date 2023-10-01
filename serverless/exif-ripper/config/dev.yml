@@ -4,4 +4,4 @@ aws_region: eu-west-1
 deployment_bucket: serverless-deployment-holder-658fi8r7
 stage: dev
 iam_role_arn: arn:aws:iam::779934699932:role/lambda/dev/exif-ripper-dev-eu-west-1-lambdaRole20220427180337074400000001
-ssm_root_prefix: /genomics/exifripper
+ssm_root_prefix: /stablecaps/exifripper

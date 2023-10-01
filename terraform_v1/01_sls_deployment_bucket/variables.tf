@@ -5,6 +5,6 @@ variable "env" {
 }
 
 variable "random_string" {
-  description = "A random string to ensure that different people can create uniuque s3 resources"
+  description = "A random string to ensure that different people can create globally unique s3 resources"
   type        = string
 }

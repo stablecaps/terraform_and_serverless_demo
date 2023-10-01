@@ -12,4 +12,3 @@ provider "aws" {
   region = "eu-west-1"
 }
 
-# TODO: Setup remote state

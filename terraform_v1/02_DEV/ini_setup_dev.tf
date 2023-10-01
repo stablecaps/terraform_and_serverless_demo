@@ -1,19 +1,10 @@
-locals {
-  tags = {
-    environment = var.env
-    project     = "genomics"
-    owner       = "gtampi/devops"
-    created_by  = "terraform"
-  }
-}
-
 module "exif_buckets" {
   source = "../modules/exif_ripper_buckets"
 
   env           = var.env
   random_string = var.random_string
-  bucket_source = "genomics-source"
-  bucket_dest   = "genomics-destination"
+  bucket_source = "stablecaps-source"
+  bucket_dest   = "stablecaps-destination"
 
   tags = local.tags
 
@@ -34,15 +25,13 @@ module "lambda_role_and_policies" {
 }
 
 # TODO: make this module able to assign any number of users arbitrary bucket permssions
-# TODO: make this handle multiple envs
+module "iam_exif_users" {
+  source = "../modules/iam_exif_users"
 
-# module "iam_exif_users" {
-#   source = "../modules/iam_exif_users"
+  env  = var.env
+  tags = local.tags
 
-#   env  = var.env
-#   tags = local.tags
+  bucket_source = module.exif_buckets.bucket_source_name
+  bucket_dest   = module.exif_buckets.bucket_dest_name
 
-#   bucket_source = module.exif_buckets.bucket_source_name
-#   bucket_dest   = module.exif_buckets.bucket_dest_name
-
-# }
+}

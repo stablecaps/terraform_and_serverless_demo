@@ -18,12 +18,11 @@ variable "terraform_backend_config_file_path" {
 }
 
 
-
 module "terraform_state_backend" {
 
   source     = "cloudposse/tfstate-backend/aws"
   version    = "0.38.1"
-  namespace  = "genomics-${var.random_string}"
+  namespace  = "stablecaps-${var.random_string}"
   stage      = var.env
   name       = "terraform"
   attributes = ["state"]
@@ -31,11 +30,11 @@ module "terraform_state_backend" {
   environment = "eu-west-1"
 
   dynamodb_enabled              = true
-  dynamodb_table_name           = "tf-backend-${var.env}-genomics-${var.random_string}"
+  dynamodb_table_name           = "tf-backend-${var.env}-stablecaps-${var.random_string}"
   billing_mode                  = "PAY_PER_REQUEST"
   enable_point_in_time_recovery = false
 
-  s3_bucket_name             = "tf-backend-${var.env}-genomics-${var.random_string}"
+  s3_bucket_name             = "tf-backend-${var.env}-stablecaps-${var.random_string}"
   bucket_enabled             = true
   block_public_acls          = true
   block_public_policy        = true

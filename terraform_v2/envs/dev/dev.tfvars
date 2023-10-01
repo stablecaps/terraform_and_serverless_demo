@@ -1,2 +1,2 @@
 env             = "dev"
-ssm_root_prefix = "/genomics/exifripper"
+ssm_root_prefix = "/stablecaps/exifripper"

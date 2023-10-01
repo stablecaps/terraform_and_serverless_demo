@@ -25,7 +25,7 @@ No resources.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_env"></a> [env](#input\_env) | Deployment environment. e.g. dev, uat, prod | `string` | `"dev"` | no |
-| <a name="input_random_string"></a> [random\_string](#input\_random\_string) | A random string to ensure that different people can create uniuque s3 resources | `string` | n/a | yes |
+| <a name="input_random_string"></a> [random\_string](#input\_random\_string) | A random string to ensure that different people can create globally unique s3 resources | `string` | n/a | yes |
 
 ## Outputs
 

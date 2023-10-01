@@ -1,14 +1,3 @@
-locals {
-  tags = {
-    environment = var.env
-    project     = "genomics"
-    owner       = "gtampi/devops"
-    created_by  = "terraform"
-  }
-
-  bucket_name = "serverless-deployment-holder-${var.env}-${var.random_string}"
-}
-
 module "s3_serverless_deployment_bucket" {
 
   source = "terraform-aws-modules/s3-bucket/aws"

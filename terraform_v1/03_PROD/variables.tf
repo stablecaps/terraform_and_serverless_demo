@@ -5,12 +5,12 @@ variable "env" {
 }
 
 variable "random_string" {
-  description = "A random string to ensure that different people can create uniuque s3 resources"
+  description = "A random string to ensure that different people can create globally unique s3 resources"
   type        = string
 }
 
 variable "ssm_root_prefix" {
   description = "SSM root prefix used to construct the key path"
   type        = string
-  default     = "/genomics/exifripper"
+  default     = "/stablecaps/exifripper"
 }

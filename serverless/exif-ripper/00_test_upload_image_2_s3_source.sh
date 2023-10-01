@@ -54,7 +54,7 @@ cp -v test_images/OG_IMG_20220423_124829.jpg test_images/sls_test_img1.jpg
 SOURCE_BUCKET=$(aws --profile $AWS_PROFILE \
     --region eu-west-1 \
     ssm get-parameter \
-    --name /genomics/exifripper/dev/bucketsource \
+    --name /stablecaps/exifripper/dev/bucketsource \
     | jq '.Parameter.Value' \
     | sed 's|"||g')
 
@@ -62,7 +62,7 @@ SOURCE_BUCKET=$(aws --profile $AWS_PROFILE \
 DEST_BUCKET=$(aws --profile $AWS_PROFILE \
     --region eu-west-1 \
     ssm get-parameter \
-    --name /genomics/exifripper/dev/bucketdest \
+    --name /stablecaps/exifripper/dev/bucketdest \
     | jq '.Parameter.Value' \
     | sed 's|"||g')
 

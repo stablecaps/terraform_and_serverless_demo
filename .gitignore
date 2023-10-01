@@ -129,3 +129,7 @@ dmypy.json
 .pyre/
 serverless/exif-ripper/*.output
 append_these_perms_to_aws_credentials_file.secrets
+
+
+*/**/.pluralith
+*/**/.vscode

@@ -24,9 +24,9 @@ No resources.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_env"></a> [env](#input\_env) | n/a | `string` | `"dev"` | no |
-| <a name="input_random_string"></a> [random\_string](#input\_random\_string) | n/a | `string` | n/a | yes |
-| <a name="input_terraform_backend_config_file_path"></a> [terraform\_backend\_config\_file\_path](#input\_terraform\_backend\_config\_file\_path) | n/a | `string` | `"."` | no |
+| <a name="input_env"></a> [env](#input\_env) | Deployment environment. e.g. dev, uat, prod | `string` | n/a | yes |
+| <a name="input_random_string"></a> [random\_string](#input\_random\_string) | A random string to ensure that different people can create globally unique s3 resources | `string` | `"defaultNotRandom"` | no |
+| <a name="input_terraform_backend_config_file_path"></a> [terraform\_backend\_config\_file\_path](#input\_terraform\_backend\_config\_file\_path) | Path to Terraform backend config file | `string` | `"."` | no |
 
 ## Outputs
 

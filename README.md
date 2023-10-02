@@ -1,7 +1,7 @@
 # A Timed Interview Test (~5 days)
 
 ## A more readable version is available on the wiki
-#### [wiki](https://github.com/stablecaps/guides-policies-and-coding-standards/wiki/Terraform-&-Serverless-1-%E2%80%90-overview)
+### [wiki](https://github.com/stablecaps/guides-policies-and-coding-standards/wiki/Terraform-&-Serverless-1-%E2%80%90-overview)
 
 ## Overview
 **Step 1**
